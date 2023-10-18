@@ -1,0 +1,15 @@
+# Compiled source #
+###################
+*.o
+*.so
+
+# Bochs related file #
+##############
+*.img
+*.img.lock
+*.ini
+
+# IDE related file #
+##############
+.idea
+
