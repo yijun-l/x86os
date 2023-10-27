@@ -48,7 +48,7 @@ _start:
 ; Print msg when read failure
 ;-------------------------------------------------------------------------
 
-.read_hd_failure
+.read_hd_failure:
     mov si, read_hd_failure_msg
     call print
     jmp stuck_loop
