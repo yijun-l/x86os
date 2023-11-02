@@ -46,7 +46,7 @@ ${BUILD}/kernel.bin: ${BUILD}/kernel.elf
 	objcopy ${OC_FLAGS} $< $@
 
 # compile C and ASM code to object file, and link them to ELF32 file
-${BUILD}/kernel.elf: ${BUILD}/boot/head.o ${BUILD}/init/main32.o ${BUILD}/kernel/asm/io.o ${BUILD}/kernel/console.o
+${BUILD}/kernel.elf: ${BUILD}/boot/head.o ${BUILD}/init/main32.o ${BUILD}/kernel/asm/io.o ${BUILD}/kernel/console.o ${BUILD}/kernel/vsprintf.o
 	ld ${LD_FLAGS} $^ -o $@
 
 ${BUILD}/boot/head.o: ${SOURCE}/boot/head.asm
