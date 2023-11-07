@@ -13,6 +13,10 @@ static void itos(int num, char* buf)
         num = -num;
     }
 
+    if(num == 0){
+        *(buf + i++) = '0';
+    }
+
     /* convert each digit in reverse order */
     while(num > 0){
         *(buf + i++) = num % 10 + '0';
@@ -36,10 +40,11 @@ static void itos(int num, char* buf)
     }
 }
 
-static int vsprintf(char *buf, const char *fmt, va_list args)
+int vsprintf(char *buf, const char *fmt, va_list args)
 {
     char* str;
-    char *tmp;
+    char tmp_buf[2000] = {};
+    char* tmp = tmp_buf;
 
     for(str=buf ; *fmt ; ++fmt){
         if(*fmt != '%'){
@@ -90,7 +95,7 @@ int printf(const char *fmt, ...)
     int i;
     char buf[2000] = " ";
     va_start(args, fmt);
-    i = vsprintf(buf, fmt, args);
+     i = vsprintf(buf, fmt, args);
     console_write(buf);
     va_end(args);
 
