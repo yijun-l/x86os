@@ -6,9 +6,7 @@
 void kernel32_entry(){
     console_init();
     idt_init();
-    MAGIC_BREAKPOINT
-    int i = 1/0;
+    STI
 
     while(1);
-
 }

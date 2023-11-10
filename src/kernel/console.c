@@ -20,6 +20,8 @@
 #define ROW_SIZE (WIDTH * 2)
 #define SCR_SIZE (ROW_SIZE * HEIGHT)
 
+#define ASCII_BS 0x8
+#define ASCII_HT 0x9
 #define ASCII_LF 0xa
 
 static u32 screen;          /* screen start location memory address     */
@@ -83,6 +85,16 @@ static void command_lf(){
     console_validation();
 }
 
+/* backspace operation */
+static void command_bs(){
+    if (x){
+        cursor--;
+        *(char*)(MEM_BASE+cursor*2) = 0x20;
+        set_cursor();
+        x--;
+    }
+}
+
 /* print string buf to specific location */
 void console_write(u8 *buf){
     u8* ptr = buf;
@@ -90,6 +102,9 @@ void console_write(u8 *buf){
         switch (*ptr) {
             case ASCII_LF:
                 command_lf();
+                break;
+            case ASCII_BS:
+                command_bs();
                 break;
             default:
                 *(char*)(MEM_BASE+cursor*2) = *ptr;
