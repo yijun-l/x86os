@@ -9,6 +9,10 @@ KERNEL_ADDR_BASE     equ     0x900
 KERNEL_SECTOR_START  equ     3
 KERNEL_SECTOR_COUNT  equ     30
 
+ARDS_TIMES_BUFFER equ 0x800
+ARDS_BUFFER equ 0x804
+ARDS_TIMES dd 0
+
 [SECTION .text]
 [BITS 16]
 global _start
@@ -24,6 +28,31 @@ _start:
 	mov fs, ax
 	mov gs, ax
 	mov si, ax
+
+;=========================================================================
+; Memory Check
+;-------------------------------------------------------------------------
+memory_check:
+    mov ebx, 0
+    mov di, ARDS_BUFFER
+    mov ecx, 20
+    mov edx, 0x534d4150
+
+.loop:
+    mov eax, 0xe820
+    int 0x15
+    JC .memory_check_failure
+    add di, cx
+    inc dword [ARDS_TIMES]
+    cmp ebx, 0
+    jne .loop
+
+    mov ax, [ARDS_TIMES]
+    mov [ARDS_TIMES_BUFFER], ax
+
+.memory_check_success:
+    mov si, memory_check_success_msg
+    call print
 
 ;=========================================================================
 ; Read content from Storage Device to memory
@@ -50,6 +79,11 @@ _start:
 
 .read_hd_failure:
     mov si, read_hd_failure_msg
+    call print
+    jmp stuck_loop
+
+.memory_check_failure:
+    mov si, check_memory_failure_msg
     call print
     jmp stuck_loop
 
@@ -184,6 +218,12 @@ read_hd_failure_msg:
 
 read_hd_success_msg:
     db "successfully load kernel", 0xa, 0xd, 0
+
+check_memory_failure_msg:
+    db "check memory failed", 0xa, 0xd, 0
+
+memory_check_success_msg:
+    db "successfully check memory", 0xa, 0xd, 0
 
 msg_step_in_protected_mode:
     db "Switching to Protected Mode", 0xa, 0xd, 0	

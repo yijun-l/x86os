@@ -1,8 +1,8 @@
 #include "../include/stdarg.h"
 #include "../include/linux/tty.h"
 
-/* conver an integer to a string */
-static void itos(int num, char* buf)
+/* convey an integer to a string */
+static void itos(int num, char* buf, int format)
 {
     int i = 0;
     int is_negative = 0;
@@ -19,14 +19,46 @@ static void itos(int num, char* buf)
 
     /* convert each digit in reverse order */
     while(num > 0){
-        *(buf + i++) = num % 10 + '0';
-        num /= 10;
+        if (num % format < 10){
+            *(buf + i++) = num % format + '0';
+        } else{
+            *(buf + i++) = (num % format - 10) + 'a';
+        }
+        num /= format;
     }
 
     /* add the negative sign if necessary */
     if(is_negative){
         *(buf + i++) = '-';
     }
+
+    /* Null-terminate the string */
+    *(buf + i) = '\0';
+
+    /* reverse the string to get the correct order */
+    int len = i;
+    for(int j = 0; j < len/2; j++){
+        char tmp = *(buf + j);
+        *(buf + j) = *(buf + i - j - 1);
+        *(buf + i - j - 1) = tmp;
+    }
+}
+
+/* convey an memory address to a string */
+static void mtos(unsigned int num, char* buf)
+{
+    int i = 0;
+
+    for(int c = 0; c < 8; c++){
+        if (num % 16 < 10){
+            *(buf + i++) = num % 16 + '0';
+        } else{
+            *(buf + i++) = (num % 16 - 10) + 'a';
+        }
+        num /= 16;
+    }
+    *(buf + i++) = 'x';
+    *(buf + i++) = '0';
 
     /* Null-terminate the string */
     *(buf + i) = '\0';
@@ -57,7 +89,19 @@ int vsprintf(char *buf, const char *fmt, va_list args)
                 *str++ = va_arg(args, char);
                 break;
             case 'd':
-                itos(va_arg(args, int), tmp);
+                itos(va_arg(args, int), tmp, 10);
+                while(*tmp){
+                    *str++ = *tmp++;
+                }
+                break;
+            case 'x':
+                itos(va_arg(args, int), tmp, 16);
+                while(*tmp){
+                    *str++ = *tmp++;
+                }
+                break;
+            case 'm':
+                mtos(va_arg(args, int), tmp);
                 while(*tmp){
                     *str++ = *tmp++;
                 }
