@@ -16,6 +16,25 @@ typedef struct{
     adrs_t data;
 } adrs_info_t;
 
+typedef struct{
+    u32 addr_start;
+    u32 addr_end;
+    u32 length;
+    u32 page_total;
+    u32 page_free;
+    u32 page_used;
+} pmem_info_t;
+
+typedef struct{
+    pmem_info_t* pmem;
+    u32 size;
+    u8* map;
+} pmem_map_t;
+
 void print_memory_info();
+void init_physical_memory();
+void print_physical_page_usage();
+void* get_page();
+void free_page(void*);
 
 #endif
