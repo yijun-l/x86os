@@ -15,12 +15,14 @@ void kernel32_entry(){
     init_physical_memory();
     print_physical_page_usage();
 
-    /* request 3 physical pages and free the 1st one, then print status */
-    void *p1 = get_page();
-    void *p2 = get_page();
-    void *p3 = get_page();
-    free_page(p1);
+    /* paging */
+    virtual_memory_init();
     print_physical_page_usage();
+
+    /* kmalloc */
+    kmalloc(1024);
+    print_physical_page_usage();
+
 
     while(1);
 }

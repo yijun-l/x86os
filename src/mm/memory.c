@@ -1,9 +1,9 @@
-#include "../../include/linux/mm.h"
-#include "../../include/linux/kernel.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/kernel.h"
 
 #define ARDS_ADDR 0x800 /* the ARDS address we stored during BootLoader*/
 #define VALID_MEM_ADDR 0x100000
-#define PAGE_SIZE 4096
+
 
 static pmem_info_t pmem_info;
 static pmem_map_t pmem_map;

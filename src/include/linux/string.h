@@ -1,9 +1,7 @@
 #ifndef _LINUX_STRING_H
 #define _LINUX_STRING_H
 
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
+#include "./types.h"
 
 char * strcpy(char * dest,const char *src);
 char * strncpy(char * dest,const char *src,size_t count);

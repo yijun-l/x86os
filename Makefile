@@ -46,7 +46,9 @@ ${BUILD}/kernel.bin: ${BUILD}/kernel.elf
 	objcopy ${OC_FLAGS} $< $@
 
 # compile C and ASM code to object file, and link them to ELF32 file
-${BUILD}/kernel.elf: ${BUILD}/boot/head.o ${BUILD}/init/main32.o ${BUILD}/kernel/asm/io.o ${BUILD}/kernel/asm/interrupt_handler.o ${BUILD}/kernel/console.o ${BUILD}/lib/string.o ${BUILD}/kernel/mm/memory.o ${BUILD}/kernel/keyboard.o ${BUILD}/kernel/vsprintf.o ${BUILD}/kernel/printk.o ${BUILD}/kernel/idt.o
+${BUILD}/kernel.elf: ${BUILD}/boot/head.o ${BUILD}/init/main32.o ${BUILD}/kernel/asm/io.o ${BUILD}/kernel/asm/interrupt_handler.o ${BUILD}/kernel/console.o \
+${BUILD}/lib/string.o ${BUILD}/mm/memory.o ${BUILD}/kernel/keyboard.o ${BUILD}/kernel/vsprintf.o ${BUILD}/kernel/printk.o ${BUILD}/kernel/idt.o \
+${BUILD}/mm/paging.o ${BUILD}/mm/malloc.o ${BUILD}/kernel/kernel.o
 	ld ${LD_FLAGS} $^ -o $@
 
 ${BUILD}/boot/head.o: ${SOURCE}/boot/head.asm
@@ -61,9 +63,8 @@ ${BUILD}/kernel/%.o: ${SOURCE}/kernel/%.c
 	$(shell mkdir -p ${BUILD}/kernel)
 	gcc ${CFLAGS} ${DEBUG} -c $< -o $@
 
-${BUILD}/kernel/mm/%.o: ${SOURCE}/kernel/mm/%.c
-	$(shell mkdir -p ${BUILD}/kernel)
-	$(shell mkdir -p ${BUILD}/kernel/mm)
+${BUILD}/mm/%.o: ${SOURCE}/mm/%.c
+	$(shell mkdir -p ${BUILD}/mm)
 	gcc ${CFLAGS} ${DEBUG} -c $< -o $@
 
 ${BUILD}/lib/%.o: ${SOURCE}/lib/%.c

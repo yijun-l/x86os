@@ -3,6 +3,8 @@
 
 #include "./types.h"
 
+#define PAGE_SIZE 4096
+
 typedef struct{
     u32 base_low;
     u32 base_high;
@@ -36,5 +38,10 @@ void init_physical_memory();
 void print_physical_page_usage();
 void* get_page();
 void free_page(void*);
+void virtual_memory_init();
+
+void* kmalloc(size_t);
+void kfree_s(void*, int);
+
 
 #endif

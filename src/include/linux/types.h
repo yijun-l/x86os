@@ -1,6 +1,8 @@
 #ifndef _LINUX_TYPES_H
 #define _LINUX_TYPES_H
 
+#define NULL ((void *) 0)
+
 /* unsigned */
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
