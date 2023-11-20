@@ -4,6 +4,7 @@
 #include "../include/asm/system.h"
 #include "../include/linux/mm.h"
 #include "../include/linux/string.h"
+#include "../include/linux/task.h"
 
 void kernel32_entry(){
     console_init();
@@ -22,6 +23,9 @@ void kernel32_entry(){
     /* kmalloc */
     kmalloc(1024);
     print_physical_page_usage();
+
+    task_init();
+    clock_init();
 
 
     while(1);

@@ -9,6 +9,7 @@ desc_tab_ptr_t idt_ptr;
 
 extern void interrupt_handler_entry();
 extern void keymap_handler_entry();
+extern void clock_handler_entry();
 
 void idt_init(){
     printk("IDT initialing...\n");
@@ -17,6 +18,10 @@ void idt_init(){
         gate_desc_t *p = &idt[i];
 
         int handler = (int)interrupt_handler_entry;
+
+        if (i == 0x20){
+            handler = (int)clock_handler_entry;
+        }
 
         if (i == 0x21){
             handler = (int)keymap_handler_entry;

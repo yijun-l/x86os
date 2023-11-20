@@ -31,7 +31,7 @@ _start:
     out 0xa1, al
 
 .set_mask:
-    mov al, 0b11111101  ; enable IRQ1 (Keyboard)
+    mov al, 0b11111100  ; enable IRQ0 (Clock), IRQ1 (Keyboard)
     out 0x21, al
 
     mov al, 0b11111111
