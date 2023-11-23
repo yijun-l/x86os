@@ -1,5 +1,6 @@
 #include "../include/asm/io.h"
 #include "../include/linux/kernel.h"
+#include "../include/linux/sched.h"
 
 #define PIT_CH0_DATA 0x40   /* Channel 0 data port (read/write) */
 #define PIT_CH1_DATA 0x41   /* Channel 1 data port (read/write) */
@@ -22,9 +23,6 @@ void clock_init(){
     outb(PIT_CH0_DATA, (COUNTER >> 8) & 0xff);  /* high byte */
 }
 
-static int count = 0;
-
 void clock_handler(){
-    printk("%d: tick tock\n", count);
-    count++;
+    sched();
 }
