@@ -7,7 +7,7 @@ int printk(const char *fmt, ...)
 {
     va_list args;
     int i;
-    char buf[2000] = " ";
+    char buf[200] = {0};
     va_start(args, fmt);
     i = vsprintf(buf, fmt, args);
     console_write(buf);

@@ -75,7 +75,7 @@ static void mtos(unsigned int num, char* buf)
 int vsprintf(char *buf, const char *fmt, va_list args)
 {
     char* str;
-    char tmp_buf[2000] = {};
+    char tmp_buf[200] = {0};
     char* tmp = tmp_buf;
 
     for(str=buf ; *fmt ; ++fmt){

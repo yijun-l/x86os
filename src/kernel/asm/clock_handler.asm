@@ -3,54 +3,67 @@
 
 extern clock_handler
 extern current
+extern task_esp0
+extern task_ss0
 
 ;=========================================================================
 ; IRQ 0 (Clock) ISR
 ;-------------------------------------------------------------------------
 global clock_handler_entry
 clock_handler_entry:
+    push ecx
 
-    cmp dword [current], 0
-    je .call_clock_handler
+    mov ecx, [current]
+    cmp ecx, 0
+    je .pop_ecx  ; check if this is the 1st task
 
 ;=========================================================================
 ; Store the context of current task
 ;-------------------------------------------------------------------------
 .store_context:
-    push eax
-    mov eax, [current]
-    mov dword [eax + 11 * 4], ecx
-    mov dword [eax + 12 * 4], edx
-    mov dword [eax + 13 * 4], ebx
-    mov dword [eax + 15 * 4], ebp
-    mov dword [eax + 16 * 4], esi
-    mov dword [eax + 17 * 4], edi
 
-    push ecx
-    ; stack layout
-    ; ecx | eax | eip | cs | eflags || esp
-    ;  0  |  4  |  8  | 12 |   16   || 20
+    ; stack layout - | ecx | eip | cs | eflags || esp |
+
+    mov [ecx + 10 * 4], eax
+    mov [ecx + 12 * 4], edx
+    mov [ecx + 13 * 4], ebx
+    mov [ecx + 15 * 4], ebp
+    mov [ecx + 16 * 4], esi
+    mov [ecx + 17 * 4], edi
+
+
+    mov eax, ecx
+    pop ecx
+    ; stack layout - | eip | cs | eflags || esp |
+    mov [eax + 11 * 4], ecx
 
     ; eip
-    mov ecx, [esp + 8]
-    mov dword [eax + 8 * 4], ecx
+    mov  ecx, [esp]
+    mov [eax + 8 * 4], ecx
+
+    ; cs
+    mov  ecx, [esp + 4]
+    mov [eax + 19 * 4], ecx
 
     ; eflags
-    mov ecx, [esp + 16]
-    mov dword [eax + 9 * 4], ecx
+    mov  ecx, [esp + 8]
+    mov [eax + 9 * 4], ecx
 
-    ; esp0
-    mov ecx, esp
-    add ecx, 20
-    mov dword [eax + 1 * 4], ecx
-    mov dword [eax + 14 * 4], ecx
+    ; esp
+    mov edx, esp
+    add edx, 12
+    mov [eax + 14 * 4], edx
 
-    ; eax
-    mov ecx, [esp + 4]
-    mov dword [eax + 4 * 10], ecx
+    ; restore kernel stack
+    mov esp, dword [task_esp0]
+    mov ss, word [task_ss0]
+    pop ebp
+    sub esp, 0x10
 
+    jmp .call_clock_handler
+
+.pop_ecx:
     pop ecx
-    pop eax
 
 .call_clock_handler:
     call clock_handler
