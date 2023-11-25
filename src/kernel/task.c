@@ -8,6 +8,7 @@ extern task_t* current;
 
 task_t* tasks[NR_TASKS] = {0};
 int task_esp0 = 0;
+int task_ebp0 = 0;
 short task_ss0 = 0;
 
 int find_empty_process(){
@@ -65,7 +66,7 @@ void task_exit(task_t* task){
 /* test task function a */
 void* func_a(void* args){
     printk("Task A starts running... \n");
-    for( int i = 0; i < 100; i++){
+    for( int i = 0; i < 10; i++){
         printk("Task A, Counter: %d\n",i);
         HLT;
         HLT;
@@ -78,7 +79,7 @@ void* func_a(void* args){
 /* test task function b */
 void* func_b(void* args){
     printk("Task B starts running... \n");
-    for( int i = 0; i < 100; i++){
+    for( int i = 0; i < 10; i++){
         printk("Task B, Counter: %d\n",i);
         HLT;
         HLT;
@@ -90,7 +91,7 @@ void* func_b(void* args){
 
 void* task_c(void* args){
     printk("Task C starts running... \n");
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < 10; i++){
         printk("Task C, Counter: %d\n", i);
         HLT;
         HLT;
@@ -99,6 +100,7 @@ void* task_c(void* args){
         HLT;
     }
 }
+
 void task_init(){
     create_task("task_a", func_a, 5);
     create_task("task_b", func_b, 10);

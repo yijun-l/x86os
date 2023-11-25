@@ -7,6 +7,7 @@ extern inc_sched_times
 extern task_exit
 extern task_esp0
 extern task_ss0
+extern task_ebp0
 
 ;=========================================================================
 ; Switch task from Current to Next
@@ -40,21 +41,16 @@ switch_task:
 
 
 .initialize_task:
-    push ebp
     ; save esp0 and ss0
     cmp dword [task_esp0], 0
-    jne .load_esp0
+    jne .load_task
     mov dword [task_esp0], esp
+    mov dword [task_ebp0], ebp
     mov word [task_ss0], ss
 
-.load_esp0:
-    ; save kernel stack to TSS esp0
-    mov eax, [current]
-    mov [eax + 1 * 4], esp
-    mov [eax + 2 * 4], ss
-    sub esp, 0x10
-
+.load_task:
     ; load task statck
+    mov eax, [current]
     mov esp, [eax + 14 * 4]
     mov ebp, [eax + 15 * 4]
 
@@ -68,12 +64,12 @@ switch_task:
 
 .end:
     ; restore kernel stack
-    mov ecx, [current]
-    mov esp, dword [ecx + 1 * 4]
-    mov ss, word [ecx + 2 * 4]
-    pop ebp
+    mov esp, dword [task_esp0]
+    mov ebp, dword [task_ebp0]
+    mov ss, word [task_ss0]
 
     ; release task
+    mov ecx, [current]
     push ecx
     call task_exit
     add esp, 4

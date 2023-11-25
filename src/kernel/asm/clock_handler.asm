@@ -4,6 +4,7 @@
 extern clock_handler
 extern current
 extern task_esp0
+extern task_ebp0
 extern task_ss0
 
 ;=========================================================================
@@ -56,9 +57,8 @@ clock_handler_entry:
 
     ; restore kernel stack
     mov esp, dword [task_esp0]
+    mov ebp, dword [task_ebp0]
     mov ss, word [task_ss0]
-    pop ebp
-    sub esp, 0x10
 
     jmp .call_clock_handler
 

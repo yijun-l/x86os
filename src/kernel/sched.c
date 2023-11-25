@@ -64,10 +64,11 @@ void sched() {
     if (current != 0) {
         current->state = TASK_INTERRUPTIBLE;
     }
+    if (current == 0 && next == 0){
+        while(1);
+    }
     next->state = TASK_RUNNING;
     current = next;
     current->counter--;
     switch_task(next);
 }
-
-
